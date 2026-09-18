@@ -1,0 +1,72 @@
+@import "@/styles/variables";
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal {
+    background-color: #fff;
+    border-top: 8px solid $danger-color;
+    border-radius: $radius-lg;
+    padding: 28px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    animation: popIn 0.3s ease-out;
+}
+
+.title {
+    color: $danger-color;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.callBtn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background-color: $danger-color;
+    color: white;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: $radius-md;
+    text-decoration: none;
+    margin: 20px 0 10px;
+
+    &:hover {
+        background-color: darken($danger-color, 10%);
+    }
+}
+
+.closeBtn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    color: $text-muted;
+    cursor: pointer;
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

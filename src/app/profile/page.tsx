@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import classNames from "classnames/bind";
 import { api } from "@/lib/axios";
 import styles from "./page.module.scss";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const cx = classNames.bind(styles);
 
@@ -86,101 +87,107 @@ export default function ProfilePage() {
         return <div className={cx("container")}>Đang tải hồ sơ...</div>;
 
     return (
-        <div className={cx("container")}>
-            <div className={cx("wrapper")}>
-                <header className={cx("header")}>
-                    <h1>Hồ Sơ Sức Khỏe Nền</h1>
-                    <button
-                        className={cx("backBtn")}
-                        onClick={() => router.push("/dashboard")}
-                    >
-                        ← Quay lại Dashboard
-                    </button>
-                </header>
+        <ProtectedRoute>
+            <div className={cx("container")}>
+                <div className={cx("wrapper")}>
+                    <header className={cx("header")}>
+                        <h1>Hồ Sơ Sức Khỏe Nền</h1>
+                        <button
+                            className={cx("backBtn")}
+                            onClick={() => router.push("/dashboard")}
+                        >
+                            ← Quay lại Dashboard
+                        </button>
+                    </header>
 
-                <div className={cx("card")}>
-                    {message && (
-                        <div className={cx("successMsg")}>{message}</div>
-                    )}
+                    <div className={cx("card")}>
+                        {message && (
+                            <div className={cx("successMsg")}>{message}</div>
+                        )}
 
-                    <form onSubmit={handleSubmit}>
-                        <div className={cx("formGrid")}>
+                        <form onSubmit={handleSubmit}>
+                            <div className={cx("formGrid")}>
+                                <div className={cx("formGroup")}>
+                                    <label>Tuổi</label>
+                                    <input
+                                        type="number"
+                                        value={age}
+                                        onChange={(e) =>
+                                            setAge(
+                                                e.target.value
+                                                    ? Number(e.target.value)
+                                                    : "",
+                                            )
+                                        }
+                                        placeholder="VD: 28"
+                                        required
+                                    />
+                                </div>
+
+                                <div className={cx("formGroup")}>
+                                    <label>Giới tính</label>
+                                    <select
+                                        value={gender}
+                                        onChange={(e) =>
+                                            setGender(e.target.value)
+                                        }
+                                    >
+                                        <option value="MALE">Nam</option>
+                                        <option value="FEMALE">Nữ</option>
+                                        <option value="OTHER">Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div className={cx("formGroup")}>
-                                <label>Tuổi</label>
-                                <input
-                                    type="number"
-                                    value={age}
+                                <label>
+                                    Bệnh mãn tính / Tiền sử bệnh (ngăn cách bằng
+                                    dấu phẩy)
+                                </label>
+                                <textarea
+                                    value={chronicConditions}
                                     onChange={(e) =>
-                                        setAge(
-                                            e.target.value
-                                                ? Number(e.target.value)
-                                                : "",
-                                        )
+                                        setChronicConditions(e.target.value)
                                     }
-                                    placeholder="VD: 28"
-                                    required
+                                    placeholder="VD: Cao huyết áp, Tiểu đường tuýp 2, Hen suyễn..."
                                 />
                             </div>
 
                             <div className={cx("formGroup")}>
-                                <label>Giới tính</label>
-                                <select
-                                    value={gender}
-                                    onChange={(e) => setGender(e.target.value)}
-                                >
-                                    <option value="MALE">Nam</option>
-                                    <option value="FEMALE">Nữ</option>
-                                    <option value="OTHER">Khác</option>
-                                </select>
+                                <label>Dị ứng (ngăn cách bằng dấu phẩy)</label>
+                                <textarea
+                                    value={allergies}
+                                    onChange={(e) =>
+                                        setAllergies(e.target.value)
+                                    }
+                                    placeholder="VD: Dị ứng Penicillin, Hải sản, Phấn hoa..."
+                                />
                             </div>
-                        </div>
 
-                        <div className={cx("formGroup")}>
-                            <label>
-                                Bệnh mãn tính / Tiền sử bệnh (ngăn cách bằng dấu
-                                phẩy)
-                            </label>
-                            <textarea
-                                value={chronicConditions}
-                                onChange={(e) =>
-                                    setChronicConditions(e.target.value)
-                                }
-                                placeholder="VD: Cao huyết áp, Tiểu đường tuýp 2, Hen suyễn..."
-                            />
-                        </div>
+                            <div className={cx("formGroup")}>
+                                <label>
+                                    Thuốc đang sử dụng (ngăn cách bằng dấu phẩy)
+                                </label>
+                                <textarea
+                                    value={currentMedications}
+                                    onChange={(e) =>
+                                        setCurrentMedications(e.target.value)
+                                    }
+                                    placeholder="VD: Paracetamol 500mg, Metformin..."
+                                />
+                            </div>
 
-                        <div className={cx("formGroup")}>
-                            <label>Dị ứng (ngăn cách bằng dấu phẩy)</label>
-                            <textarea
-                                value={allergies}
-                                onChange={(e) => setAllergies(e.target.value)}
-                                placeholder="VD: Dị ứng Penicillin, Hải sản, Phấn hoa..."
-                            />
-                        </div>
-
-                        <div className={cx("formGroup")}>
-                            <label>
-                                Thuốc đang sử dụng (ngăn cách bằng dấu phẩy)
-                            </label>
-                            <textarea
-                                value={currentMedications}
-                                onChange={(e) =>
-                                    setCurrentMedications(e.target.value)
-                                }
-                                placeholder="VD: Paracetamol 500mg, Metformin..."
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            className={cx("saveBtn")}
-                            disabled={loading}
-                        >
-                            {loading ? "Đang lưu..." : "Lưu Hồ Sơ Sức Khỏe"}
-                        </button>
-                    </form>
+                            <button
+                                type="submit"
+                                className={cx("saveBtn")}
+                                disabled={loading}
+                            >
+                                {loading ? "Đang lưu..." : "Lưu Hồ Sơ Sức Khỏe"}
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        </ProtectedRoute>
     );
 }
