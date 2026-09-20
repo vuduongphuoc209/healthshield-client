@@ -82,10 +82,24 @@ export default function DashboardPage() {
                 <div className={cx("wrapper")}>
                     <header className={cx("header")}>
                         <h1>HealthShield AI</h1>
-                        <div>
-                            <span style={{ marginRight: "12px" }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                            }}
+                        >
+                            <span style={{ marginRight: "4px" }}>
                                 Xin chào, {user?.fullName || "Người dùng"}
                             </span>
+                            <button
+                                onClick={() =>
+                                    router.push("/dashboard/history")
+                                }
+                                className={cx("logoutBtn")}
+                            >
+                                📜 Lịch sử
+                            </button>
                             <button
                                 onClick={() => router.push("/profile")}
                                 className={cx("logoutBtn")}

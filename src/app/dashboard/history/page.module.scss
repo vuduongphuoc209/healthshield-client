@@ -1,0 +1,18 @@
+@import "../page.module.scss";
+
+/* Thêm các tùy chỉnh riêng nếu cần */
+.historyLink {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #f3f4f6;
+    color: #374151;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #e5e7eb;
+    }
+}
