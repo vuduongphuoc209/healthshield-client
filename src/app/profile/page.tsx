@@ -104,7 +104,7 @@ export default function ProfilePage() {
         };
 
         try {
-            await api.put("/health-profiles/me", payload);
+            await api.patch("/health-profiles/me", payload);
             setMessage({
                 type: "success",
                 text: "Cập nhật hồ sơ sức khỏe thành công!",
