@@ -6,7 +6,11 @@ import classNames from "classnames/bind";
 import { api } from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./page.module.scss";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import { ProtectedRoute } from "@/components";
+import {
+    FileProtectOutlined,
+    HistoryOutlined,
+} from "@ant-design/icons/es/icons/index";
 
 const cx = classNames.bind(styles);
 
@@ -20,7 +24,7 @@ interface AIAnalysisResult {
     medicalDisclaimer: string;
 }
 
-export default function DashboardPage() {
+export function DashboardPage() {
     const [symptoms, setSymptoms] = useState("");
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
@@ -98,13 +102,19 @@ export default function DashboardPage() {
                                 }
                                 className={cx("logoutBtn")}
                             >
-                                📜 Lịch sử
+                                <HistoryOutlined
+                                    style={{ marginRight: "8px" }}
+                                />
+                                Lịch sử
                             </button>
                             <button
                                 onClick={() => router.push("/profile")}
                                 className={cx("logoutBtn")}
                             >
-                                📋 Hồ sơ sức khỏe
+                                <FileProtectOutlined
+                                    style={{ marginRight: "8px" }}
+                                />
+                                Hồ sơ sức khỏe
                             </button>
                             <button
                                 onClick={handleLogout}
@@ -215,3 +225,5 @@ export default function DashboardPage() {
         </ProtectedRoute>
     );
 }
+
+export default DashboardPage;

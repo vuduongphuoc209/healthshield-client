@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import classNames from "classnames/bind";
 import { api } from "@/lib/axios";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import { ProtectedRoute, NotificationBell } from "@/components";
 import styles from "./page.module.scss";
 
 const cx = classNames.bind(styles);
@@ -121,11 +121,22 @@ export default function AssessmentHistoryPage() {
                                 thời gian
                             </p>
                         </div>
-                        <Link href="/dashboard" className={cx("historyLink")}>
-                            ← Quay lại Phân Tích
-                        </Link>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "10px",
+                            }}
+                        >
+                            <NotificationBell />
+                            <Link
+                                href="/dashboard"
+                                className={cx("historyLink")}
+                            >
+                                ← Quay lại Phân Tích
+                            </Link>
+                        </div>
                     </header>
-
                     {loading ? (
                         <div
                             className={cx("card")}
@@ -466,6 +477,7 @@ export default function AssessmentHistoryPage() {
                                                                                 {
                                                                                     f.note
                                                                                 }
+
                                                                                 "
                                                                             </div>
                                                                         )}

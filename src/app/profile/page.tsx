@@ -4,12 +4,13 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import classNames from "classnames/bind";
 import { api } from "@/lib/axios";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import { ProtectedRoute } from "@/components";
 import styles from "./page.module.scss";
+import { FileProtectOutlined } from "@ant-design/icons";
 
 const cx = classNames.bind(styles);
 
-export default function ProfilePage() {
+export function ProfilePage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState({ type: "", text: "" });
@@ -129,7 +130,12 @@ export default function ProfilePage() {
                     {/* Header với nút quay lại Dashboard */}
                     <header className={cx("header")}>
                         <div>
-                            <h1>📋 Hồ Sơ Sức Khỏe Cá Nhân</h1>
+                            <h1>
+                                <FileProtectOutlined
+                                    style={{ marginRight: "8px" }}
+                                />
+                                Hồ Sơ Sức Khỏe Cá Nhân
+                            </h1>
                             <p
                                 style={{
                                     color: "#64748b",
@@ -433,3 +439,5 @@ export default function ProfilePage() {
         </ProtectedRoute>
     );
 }
+
+export default ProfilePage;

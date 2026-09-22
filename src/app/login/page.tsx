@@ -9,7 +9,7 @@ import styles from "./page.module.scss";
 
 const cx = classNames.bind(styles);
 
-export default function LoginPage() {
+export function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -81,3 +81,5 @@ export default function LoginPage() {
         </div>
     );
 }
+
+export default LoginPage;
