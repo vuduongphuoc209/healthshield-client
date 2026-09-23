@@ -3,7 +3,7 @@
 .overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.65);
+    background-color: $overlay-color;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,13 +12,13 @@
 }
 
 .modal {
-    background-color: #fff;
+    background-color: $surface-color;
     border-top: 8px solid $danger-color;
     border-radius: $radius-lg;
     padding: 28px;
     max-width: 500px;
     width: 100%;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    box-shadow: $shadow-lg;
     animation: popIn 0.3s ease-out;
 }
 
@@ -37,7 +37,7 @@
     width: 100%;
     padding: 14px;
     background-color: $danger-color;
-    color: white;
+    color: $white;
     text-align: center;
     font-weight: 700;
     font-size: 1.1rem;

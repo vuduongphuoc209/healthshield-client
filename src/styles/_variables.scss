@@ -1,16 +1,68 @@
-// Khai báo màu sắc y tế, font, breakpoint
-// Colors
-$primary-color: #0284c7; // Medical Blue
-$primary-dark: #0369a1;
-$secondary-color: #0d9488; // Teal/Health
-$danger-color: #dc2626; // Emergency Critical Red
-$warning-color: #d97706; // High/Moderate Risk Yellow
-$success-color: #16a34a; // Low Risk Green
-$bg-light: #f8fafc;
-$text-main: #0f172a;
-$text-muted: #64748b;
-$border-color: #e2e8f0;
+// Shared design tokens. Update these values to retheme the whole client.
+$primary-color: #0071e3;
+$primary-dark: #0066cc;
+$primary-soft: #e8f2ff;
+$secondary-color: #34c759;
+$danger-color: #dc2626;
+$danger-soft: #fff2f2;
+$danger-border: #ffb3b3;
+$warning-color: #ff9500;
+$warning-soft: #fff8e8;
+$success-color: #248a3d;
+$success-soft: #effaf1;
+$info-color: #2563eb;
 
-// Layout
-$radius-md: 8px;
-$radius-lg: 12px;
+$bg-light: #f5f5f7;
+$surface-color: #ffffff;
+$surface-muted: #f5f5f7;
+$surface-raised: #fbfbfd;
+$surface-hover: #f2f2f7;
+$surface-blue: #e8f2ff;
+$surface-danger: #fff2f2;
+$surface-dark: #1d1d1f;
+$text-main: #1d1d1f;
+$text-body: #424245;
+$text-muted: #6e6e73;
+$text-subtle: #86868b;
+$text-secondary: #5c5c60;
+$text-on-color: #ffffff;
+$text-danger: #b91c1c;
+$text-print: #000000;
+$text-on-dark-muted: rgba(255, 255, 255, 0.8);
+$text-on-dark-subtle: rgba(255, 255, 255, 0.7);
+$border-color: #d2d2d7;
+$border-strong: #b8b8bd;
+$border-blue: #b8d7ff;
+$border-danger: #ffb3b3;
+$white: #ffffff;
+$black: #1d1d1f;
+$overlay-color: rgba(0, 0, 0, 0.65);
+$focus-ring: rgba(0, 113, 227, 0.16);
+$soft-blue-ring: rgba(0, 113, 227, 0.18);
+$soft-blue-ring-strong: rgba(0, 113, 227, 0.28);
+$soft-border: rgba(210, 210, 215, 0.8);
+$scrollbar-color: #b8b8bd;
+
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 8px 24px rgba(0, 0, 0, 0.07);
+$shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.12);
+
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 18px;
+$radius-xl: 24px;
+$radius-pill: 999px;
+
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 20px;
+$space-6: 24px;
+$space-8: 32px;
+$space-10: 40px;
+
+$transition-fast: 150ms ease;
+$transition-base: 220ms ease;
+$content-width: 1180px;
+$mobile-breakpoint: 720px;

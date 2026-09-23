@@ -85,43 +85,54 @@ export function DashboardPage() {
             <div className={cx("container")}>
                 <div className={cx("wrapper")}>
                     <header className={cx("header")}>
-                        <h1>HealthShield AI</h1>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                            }}
-                        >
-                            <span style={{ marginRight: "4px" }}>
+                        <div className={cx("brand")}>
+                            <h1>HEALTHSHIELD AI</h1>
+                        </div>
+                        <div className={cx("headerMeta")}>
+                            <p className={cx("greeting")}>
                                 Xin chào, {user?.fullName || "Người dùng"}
-                            </span>
-                            <button
-                                onClick={() =>
-                                    router.push("/dashboard/history")
-                                }
-                                className={cx("logoutBtn")}
+                            </p>
+                            <nav
+                                className={cx("navActions")}
+                                aria-label="Điều hướng dashboard"
                             >
-                                <HistoryOutlined
-                                    style={{ marginRight: "8px" }}
-                                />
-                                Lịch sử
-                            </button>
-                            <button
-                                onClick={() => router.push("/profile")}
-                                className={cx("logoutBtn")}
-                            >
-                                <FileProtectOutlined
-                                    style={{ marginRight: "8px" }}
-                                />
-                                Hồ sơ sức khỏe
-                            </button>
-                            <button
-                                onClick={handleLogout}
-                                className={cx("logoutBtn")}
-                            >
-                                Đăng xuất
-                            </button>
+                                {/* Nút truy cập Trợ Lý AI Chat Sprint 7 */}
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        router.push("/dashboard/assistant")
+                                    }
+                                    className={cx("logoutBtn", "assistantBtn")}
+                                >
+                                    💬 Trợ Lý AI
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        router.push("/dashboard/history")
+                                    }
+                                    className={cx("logoutBtn")}
+                                >
+                                    <HistoryOutlined
+                                        style={{ marginRight: "8px" }}
+                                    />
+                                    Lịch sử
+                                </button>
+                                <button
+                                    onClick={() => router.push("/profile")}
+                                    className={cx("logoutBtn")}
+                                >
+                                    <FileProtectOutlined
+                                        style={{ marginRight: "8px" }}
+                                    />
+                                    Hồ sơ sức khỏe
+                                </button>
+                                <button
+                                    onClick={handleLogout}
+                                    className={cx("logoutBtn")}
+                                >
+                                    Đăng xuất
+                                </button>
+                            </nav>
                         </div>
                     </header>
 
@@ -197,8 +208,10 @@ export function DashboardPage() {
                             {result.redFlags.length > 0 && (
                                 <>
                                     <div
-                                        className={cx("sectionTitle")}
-                                        style={{ color: "#dc2626" }}
+                                        className={cx(
+                                            "sectionTitle",
+                                            "dangerTitle",
+                                        )}
                                     >
                                         🚩 Cảnh báo nguy hiểm (Red Flags):
                                     </div>
@@ -206,7 +219,7 @@ export function DashboardPage() {
                                         {result.redFlags.map((flag, i) => (
                                             <li
                                                 key={i}
-                                                style={{ color: "#dc2626" }}
+                                                className={cx("dangerText")}
                                             >
                                                 {flag}
                                             </li>

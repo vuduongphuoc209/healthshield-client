@@ -2,12 +2,14 @@
 
 .container {
     min-height: 100vh;
-    background-color: $bg-light;
-    padding: 32px 20px;
+    background:
+        radial-gradient(circle at 90% 0%, $soft-blue-ring, transparent 28%),
+        $bg-light;
+    padding: $space-8 $space-5;
 }
 
 .wrapper {
-    max-width: 680px;
+    max-width: 760px;
     margin: 0 auto;
 }
 
@@ -15,42 +17,45 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: $space-6;
 
     h1 {
-        font-size: 1.5rem;
-        color: $primary-dark;
+        font-size: clamp(1.35rem, 3vw, 1.7rem);
+        color: $text-main;
+        letter-spacing: -0.04em;
+        margin: 0;
     }
 
     .backBtn {
-        padding: 8px 16px;
-        background-color: transparent;
+        padding: 9px 14px;
+        background-color: $surface-color;
         border: 1px solid $border-color;
-        border-radius: $radius-md;
+        border-radius: $radius-pill;
         color: $text-muted;
         cursor: pointer;
         &:hover {
-            background-color: #f1f5f9;
+            background-color: $surface-muted;
         }
     }
 }
 
 .card {
-    background: #ffffff;
-    padding: 28px;
+    background: $surface-color;
+    padding: $space-8;
     border-radius: $radius-lg;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    box-shadow: $shadow-sm;
+    border: 1px solid $soft-border;
 }
 
 .formGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
+    gap: $space-4;
+    margin-bottom: $space-4;
 }
 
 .formGroup {
-    margin-bottom: 16px;
+    margin-bottom: $space-5;
 
     label {
         display: block;
@@ -73,6 +78,7 @@
 
         &:focus {
             border-color: $primary-color;
+            box-shadow: 0 0 0 3px $focus-ring;
         }
     }
 
@@ -86,7 +92,7 @@
     width: 100%;
     padding: 12px;
     background-color: $primary-color;
-    color: white;
+    color: $white;
     border: none;
     border-radius: $radius-md;
     font-weight: 600;
@@ -102,9 +108,35 @@
 
 .successMsg {
     padding: 12px;
-    background-color: #dcfce7;
+    background-color: $success-soft;
     color: $success-color;
     border-radius: $radius-md;
     margin-bottom: 16px;
     font-size: 0.875rem;
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .container {
+        padding: $space-5 $space-4;
+    }
+
+    .header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: $space-3;
+    }
+
+    .header .backBtn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .card {
+        padding: $space-5;
+    }
+
+    .formGrid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
 }

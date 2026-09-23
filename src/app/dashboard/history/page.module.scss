@@ -25,15 +25,15 @@
 
 .historyLink {
     padding: 8px 16px;
-    background-color: #f3f4f6;
-    color: #374151;
+    background-color: $surface-muted;
+    color: $text-body;
     border-radius: $radius-md;
     font-size: 14px;
     font-weight: 500;
     transition: background-color 0.2s;
 
     &:hover {
-        background-color: #e5e7eb;
+        background-color: $surface-hover;
     }
 }
 
@@ -46,7 +46,7 @@
 
 // --- Khối Bộ Lọc ---
 .filterCard {
-    background: #fff;
+    background: $surface-color;
     padding: 16px;
     border-radius: $radius-lg;
     border: 1px solid $border-color;
@@ -131,13 +131,13 @@
         width: 5px;
     }
     &::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
+        background: $scrollbar-color;
         border-radius: 4px;
     }
 }
 
 .historyItemCard {
-    background: #fff;
+    background: $surface-color;
     padding: 14px;
     border-radius: $radius-md;
     border: 1px solid $border-color;
@@ -146,14 +146,14 @@
     border-left: 5px solid transparent;
 
     &:hover {
-        background-color: #f8fafc;
+        background-color: $surface-muted;
         transform: translateY(-1px);
     }
 
     &.active {
         border-color: $primary-color;
         border-left-width: 5px;
-        box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.1);
+        box-shadow: $shadow-sm;
     }
 
     &--CRITICAL {
@@ -163,7 +163,7 @@
         border-left-color: $warning-color;
     }
     &--MODERATE {
-        border-left-color: #f59e0b;
+        border-left-color: $warning-color;
     }
     &--LOW {
         border-left-color: $success-color;
@@ -207,7 +207,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
+    background: $surface-color;
     padding: 10px 16px;
     border-radius: $radius-md;
     border: 1px solid $border-color;
@@ -215,10 +215,10 @@
 
     code {
         font-family: monospace;
-        background: #f1f5f9;
+        background: $surface-hover;
         padding: 2px 6px;
         border-radius: 4px;
-        color: #334155;
+        color: $text-body;
     }
 }
 
@@ -227,8 +227,8 @@
     align-items: center;
     gap: 6px;
     padding: 8px 14px;
-    background-color: #0f172a;
-    color: #fff;
+    background-color: $surface-dark;
+    color: $text-on-color;
     border: none;
     border-radius: $radius-md;
     font-size: 0.8125rem;
@@ -237,18 +237,18 @@
     transition: background 0.2s;
 
     &:hover {
-        background-color: #334155;
+        background-color: $text-body;
     }
 }
 
 // --- Báo Cáo Y Tế Chi Tiết ---
 .medicalReportCard {
-    background: #fff;
+    background: $surface-color;
     padding: 24px;
     border-radius: $radius-lg;
     border: 1px solid $border-color;
     margin-bottom: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    box-shadow: $shadow-sm;
 
     &.riskBorder--CRITICAL {
         border-top: 6px solid $danger-color;
@@ -257,7 +257,7 @@
         border-top: 6px solid $warning-color;
     }
     &.riskBorder--MODERATE {
-        border-top: 6px solid #f59e0b;
+        border-top: 6px solid $warning-color;
     }
     &.riskBorder--LOW {
         border-top: 6px solid $success-color;
@@ -265,8 +265,8 @@
 }
 
 .patientBox {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: $surface-muted;
+    border: 1px solid $border-color;
     border-radius: $radius-md;
     padding: 12px 16px;
     margin-bottom: 16px;
@@ -277,7 +277,7 @@
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 8px;
     font-size: 0.8125rem;
-    color: #334155;
+    color: $text-body;
 }
 
 .reportRow {
@@ -293,7 +293,7 @@
     p {
         font-size: 0.875rem;
         line-height: 1.5;
-        color: #334155;
+        color: $text-body;
         margin: 0;
     }
 }
@@ -316,20 +316,20 @@
 
         li {
             margin-bottom: 4px;
-            color: #334155;
+            color: $text-body;
         }
     }
 }
 
 .redFlagBox {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
+    background: $surface-danger;
+    border: 1px solid $border-danger;
     padding: 12px;
     border-radius: $radius-md;
 }
 
 .followUpLogSection {
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid $border-color;
     padding-top: 14px;
 }
 
@@ -340,8 +340,8 @@
 }
 
 .followUpItem {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: $surface-muted;
+    border: 1px solid $border-color;
     padding: 10px;
     border-radius: $radius-md;
     font-size: 0.8125rem;
@@ -352,19 +352,19 @@
 }
 
 .fNote {
-    color: #475569;
+    color: $text-secondary;
     margin: 4px 0;
 }
 
 .fDate {
     font-size: 0.6875rem;
-    color: #94a3b8;
+    color: $text-subtle;
 }
 
 .disclaimer {
     margin-top: 16px;
     padding: 12px;
-    background: #f1f5f9;
+    background: $surface-hover;
     border-radius: $radius-md;
     font-size: 0.75rem;
     color: $text-muted;
@@ -380,25 +380,25 @@
 
     &--CRITICAL {
         background: $danger-color;
-        color: #fff;
+        color: $text-on-color;
     }
     &--HIGH {
         background: $warning-color;
-        color: #fff;
+        color: $text-on-color;
     }
     &--MODERATE {
-        background: #f59e0b;
-        color: #fff;
+        background: $warning-color;
+        color: $text-on-color;
     }
     &--LOW {
         background: $success-color;
-        color: #fff;
+        color: $text-on-color;
     }
 }
 
 // --- Khối Form Follow-up ---
 .followUpCard {
-    background: #fff;
+    background: $surface-color;
     border: 1px solid $border-color;
     padding: 20px;
     border-radius: $radius-lg;
@@ -433,7 +433,7 @@
 .submitBtn {
     padding: 9px 18px;
     background-color: $primary-color;
-    color: #fff;
+    color: $text-on-color;
     border: none;
     border-radius: $radius-md;
     cursor: pointer;
@@ -450,9 +450,47 @@
     text-align: center;
     font-size: 0.875rem;
     color: $text-muted;
-    background: #fff;
+    background: $surface-color;
     border-radius: $radius-md;
     border: 1px dashed $border-color;
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .container {
+        padding: $space-5 $space-4;
+    }
+
+    .header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: $space-3;
+    }
+
+    .header > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: $space-2;
+    }
+
+    .mainLayout {
+        grid-template-columns: 1fr;
+        gap: $space-4;
+    }
+
+    .historyList {
+        max-height: 320px;
+    }
+
+    .actionToolbar {
+        align-items: stretch;
+        flex-direction: column;
+        gap: $space-3;
+    }
+
+    .exportPdfBtn {
+        justify-content: center;
+    }
 }
 
 // Ẩn mặc định phần tử dành riêng cho Print khi hiển thị trên Web
@@ -475,8 +513,8 @@
     }
 
     body {
-        background-color: #fff !important;
-        color: #000 !important;
+        background-color: $surface-color !important;
+        color: $text-print !important;
     }
 
     .container {
@@ -495,7 +533,7 @@
     }
 
     .medicalReportCard {
-        border: 1px solid #94a3b8 !important;
+        border: 1px solid $text-subtle !important;
         box-shadow: none !important;
         padding: 20px !important;
         page-break-inside: avoid;
@@ -505,26 +543,26 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        border-bottom: 2px solid #0f172a;
+        border-bottom: 2px solid $text-main;
         padding-bottom: 12px;
         margin-bottom: 16px;
 
         h2 {
             font-size: 1.15rem;
             margin: 0;
-            color: #0f172a;
+            color: $text-main;
         }
 
         p {
             font-size: 0.75rem;
-            color: #64748b;
+            color: $text-muted;
             margin: 4px 0 0 0;
         }
 
         .reportMeta {
             font-size: 0.75rem;
             text-align: right;
-            color: #475569;
+            color: $text-secondary;
         }
     }
 

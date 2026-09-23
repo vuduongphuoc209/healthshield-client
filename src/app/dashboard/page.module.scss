@@ -2,50 +2,94 @@
 
 .container {
     min-height: 100vh;
-    background-color: $bg-light;
-    padding: 32px 20px;
+    background:
+        radial-gradient(circle at 90% 0%, $soft-blue-ring, transparent 28%),
+        $bg-light;
+    padding: $space-8 $space-5;
 }
 
 .wrapper {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
 .header {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: $space-6;
+    text-align: center;
+}
 
-    h1 {
-        font-size: 1.75rem;
+.brand h1 {
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    color: $text-main;
+    letter-spacing: -0.07em;
+    line-height: 0.98;
+    margin: 0 0 $space-5;
+    font-weight: 700;
+}
+
+.headerMeta {
+    width: 100%;
+}
+
+.greeting {
+    color: $text-muted;
+    font-size: 1rem;
+    margin: 0 0 $space-4;
+}
+
+.navActions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $space-3;
+}
+
+.logoutBtn {
+    padding: 9px 14px;
+    background-color: $surface-color;
+    border: 1px solid $border-color;
+    border-radius: $radius-pill;
+    color: $text-muted;
+    cursor: pointer;
+    transition:
+        background-color $transition-base,
+        border-color $transition-base,
+        color $transition-base;
+    &:hover {
+        background-color: $danger-soft;
+        color: $danger-color;
+        border-color: $danger-border;
+    }
+}
+
+.assistantBtn {
+    background: $primary-soft;
+    border-color: $soft-blue-ring;
+    color: $primary-dark;
+    font-weight: 600;
+
+    &:hover {
+        background: $surface-blue;
+        border-color: $soft-blue-ring-strong;
         color: $primary-dark;
     }
 }
 
-.logoutBtn {
-    padding: 8px 16px;
-    background-color: transparent;
-    border: 1px solid $border-color;
-    border-radius: $radius-md;
-    color: $text-muted;
-    cursor: pointer;
-    &:hover {
-        background-color: #fee2e2;
-        color: $danger-color;
-    }
-}
-
 .card {
-    background: #ffffff;
-    padding: 24px;
+    background: $surface-color;
+    padding: $space-6;
     border-radius: $radius-lg;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    margin-bottom: 24px;
+    box-shadow: $shadow-sm;
+    border: 1px solid $soft-border;
+    margin-bottom: $space-6;
 
     h2 {
         font-size: 1.125rem;
-        margin-bottom: 12px;
+        margin-bottom: $space-3;
         color: $text-main;
     }
 }
@@ -62,6 +106,7 @@
 
     &:focus {
         border-color: $primary-color;
+        box-shadow: 0 0 0 3px $focus-ring;
     }
 }
 
@@ -69,7 +114,7 @@
     width: 100%;
     padding: 14px;
     background-color: $primary-color;
-    color: #fff;
+    color: $white;
     border: none;
     border-radius: $radius-md;
     font-weight: 600;
@@ -85,11 +130,11 @@
 
 // Visual Alert cho từng mức Risk Level
 .resultCard {
-    border-left: 6px solid $primary-color;
+    border-left: 4px solid $primary-color;
 
     &--CRITICAL {
         border-left-color: $danger-color;
-        background-color: #fef2f2;
+        background-color: $danger-soft;
     }
     &--HIGH {
         border-left-color: $warning-color;
@@ -109,19 +154,19 @@
 
     &--CRITICAL {
         background: $danger-color;
-        color: #fff;
+        color: $white;
     }
     &--HIGH {
         background: $warning-color;
-        color: #fff;
+        color: $white;
     }
     &--MODERATE {
-        background: #f59e0b;
-        color: #fff;
+        background: $warning-color;
+        color: $white;
     }
     &--LOW {
         background: $success-color;
-        color: #fff;
+        color: $white;
     }
 }
 
@@ -129,6 +174,11 @@
     font-weight: 600;
     margin: 12px 0 6px;
     color: $text-main;
+}
+
+.dangerTitle,
+.dangerText {
+    color: $danger-color;
 }
 
 .list {
@@ -143,8 +193,33 @@
 .disclaimer {
     margin-top: 16px;
     padding: 12px;
-    background: #f1f5f9;
+    background: $surface-muted;
     border-radius: $radius-md;
     font-size: 0.8125rem;
     color: $text-muted;
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .container {
+        padding: $space-5 $space-4;
+    }
+
+    .logoutBtn {
+        padding-inline: $space-2;
+        font-size: 0.8rem;
+    }
+
+    .navActions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+    }
+
+    .logoutBtn {
+        width: 100%;
+    }
+
+    .card {
+        padding: $space-5;
+    }
 }

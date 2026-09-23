@@ -1,1 +1,51 @@
-// # Reset CSS & CSS Variables
+@import "./variables";
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background: $bg-light;
+}
+
+body {
+    margin: 0;
+    background: $bg-light;
+    color: $text-main;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+    margin-top: 0;
+}
+
+::selection {
+    background: $primary-soft;
+    color: $primary-dark;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+a {
+    color: inherit;
+}
