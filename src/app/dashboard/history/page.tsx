@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import classNames from "classnames/bind";
 import { api } from "@/lib/axios";
+import { useAuth } from "@/context/AuthContext";
 import { ProtectedRoute, NotificationBell } from "@/components";
 import styles from "./page.module.scss";
 
@@ -23,19 +24,42 @@ interface AssessmentItem {
     riskExplanation: string;
     possibleCauses: string[];
     recommendedActions: string[];
+    redFlags?: string[];
+    medicalDisclaimer?: string;
     createdAt: string;
     followUps?: IFollowUp[];
 }
 
+interface PatientVitals {
+    biologicalSex?: string;
+    bloodType?: string;
+    heightCm?: number;
+    weightKg?: number;
+    bloodPressure?: {
+        systolic?: number;
+        diastolic?: number;
+    };
+    preExistingConditions?: string[];
+}
+
 export default function AssessmentHistoryPage() {
+    const { user } = useAuth();
     const [history, setHistory] = useState<AssessmentItem[]>([]);
     const [selectedItem, setSelectedItem] = useState<AssessmentItem | null>(
+        null,
+    );
+    const [patientVitals, setPatientVitals] = useState<PatientVitals | null>(
         null,
     );
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState("");
 
-    // Form follow-up state
+    // --- State Bộ lọc & Tìm kiếm ---
+    const [riskFilter, setRiskFilter] = useState<string>("ALL");
+    const [timeFilter, setTimeFilter] = useState<string>("ALL");
+    const [searchTerm, setSearchTerm] = useState<string>("");
+
+    // --- Form Follow-up State ---
     const [status, setStatus] = useState<"IMPROVED" | "UNCHANGED" | "WORSED">(
         "IMPROVED",
     );
@@ -44,6 +68,7 @@ export default function AssessmentHistoryPage() {
 
     useEffect(() => {
         fetchHistory();
+        fetchPatientProfile();
     }, []);
 
     const fetchHistory = async () => {
@@ -65,6 +90,66 @@ export default function AssessmentHistoryPage() {
             setLoading(false);
         }
     };
+
+    const fetchPatientProfile = async () => {
+        try {
+            const res = await api.get("/health-profile");
+            const data = res.data?.data || res.data;
+            if (data) {
+                setPatientVitals(data);
+            }
+        } catch {
+            // Không bắt buộc phải có profile để chạy history
+        }
+    };
+
+    // --- Logic Lọc & Tìm kiếm ---
+    const filteredHistory = useMemo(() => {
+        return history.filter((item) => {
+            // 1. Lọc theo Risk Level
+            if (riskFilter !== "ALL" && item.riskLevel !== riskFilter) {
+                return false;
+            }
+
+            // 2. Lọc theo thời gian
+            if (timeFilter !== "ALL") {
+                const itemDate = new Date(item.createdAt).getTime();
+                const now = new Date().getTime();
+                const daysDiff = (now - itemDate) / (1000 * 3600 * 24);
+
+                if (timeFilter === "7_DAYS" && daysDiff > 7) return false;
+                if (timeFilter === "30_DAYS" && daysDiff > 30) return false;
+            }
+
+            // 3. Tìm kiếm theo từ khóa triệu chứng
+            if (searchTerm.trim() !== "") {
+                const term = searchTerm.toLowerCase();
+                const inSummary = item.symptomSummary
+                    .toLowerCase()
+                    .includes(term);
+                const inExplanation = item.riskExplanation
+                    ?.toLowerCase()
+                    .includes(term);
+                if (!inSummary && !inExplanation) return false;
+            }
+
+            return true;
+        });
+    }, [history, riskFilter, timeFilter, searchTerm]);
+
+    // Khi danh sách lọc thay đổi, tự động chọn bản ghi đầu tiên nếu bản ghi hiện tại không thuộc danh sách
+    useEffect(() => {
+        if (filteredHistory.length > 0) {
+            const exists = filteredHistory.some(
+                (i) => i._id === selectedItem?._id,
+            );
+            if (!exists) {
+                setSelectedItem(filteredHistory[0]);
+            }
+        } else {
+            setSelectedItem(null);
+        }
+    }, [filteredHistory, selectedItem]);
 
     const handleFollowUpSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,6 +181,15 @@ export default function AssessmentHistoryPage() {
         }
     };
 
+    // --- Hàm xuất báo cáo y tế ra PDF ---
+    const handleExportPDF = () => {
+        if (!selectedItem) {
+            alert("Vui lòng chọn một phiên đánh giá để xuất báo cáo!");
+            return;
+        }
+        window.print();
+    };
+
     const getStatusText = (st: string) => {
         switch (st) {
             case "IMPROVED":
@@ -113,12 +207,13 @@ export default function AssessmentHistoryPage() {
         <ProtectedRoute>
             <div className={cx("container")}>
                 <div className={cx("wrapper")}>
-                    <header className={cx("header")}>
+                    {/* Header chuẩn (Sẽ ẩn khi in PDF) */}
+                    <header className={cx("header", "noPrint")}>
                         <div>
                             <h1>Lịch Sử & Theo Dõi Tiến Triển (Follow-up)</h1>
                             <p style={{ fontSize: "14px", color: "#6b7280" }}>
-                                Theo dõi và cập nhật tình trạng sức khỏe theo
-                                thời gian
+                                Theo dõi, lọc lịch sử và xuất báo cáo sức khỏe
+                                cho bác sĩ
                             </p>
                         </div>
                         <div
@@ -137,6 +232,7 @@ export default function AssessmentHistoryPage() {
                             </Link>
                         </div>
                     </header>
+
                     {loading ? (
                         <div
                             className={cx("card")}
@@ -151,158 +247,538 @@ export default function AssessmentHistoryPage() {
                         >
                             {errorMsg}
                         </div>
-                    ) : history.length === 0 ? (
-                        <div
-                            className={cx("card")}
-                            style={{ textAlign: "center" }}
-                        >
-                            Chưa có bản ghi đánh giá sức khỏe nào.
-                        </div>
                     ) : (
-                        <div
-                            style={{
-                                display: "grid",
-                                gridTemplateColumns: "1fr 2fr",
-                                gap: "20px",
-                            }}
-                        >
-                            {/* Danh sách các lần phân tích */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: "12px",
-                                }}
-                            >
-                                {history.map((item) => (
-                                    <div
-                                        key={item._id}
-                                        className={cx(
-                                            "card",
-                                            "resultCard",
-                                            `resultCard--${item.riskLevel}`,
-                                        )}
-                                        style={{
-                                            cursor: "pointer",
-                                            border:
-                                                selectedItem?._id === item._id
-                                                    ? "2px solid #0284c7"
-                                                    : undefined,
-                                        }}
-                                        onClick={() => setSelectedItem(item)}
-                                    >
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                                marginBottom: "8px",
+                        <div className={cx("mainLayout")}>
+                            {/* CỘT TRÁI: BỘ LỌC & DANH SÁCH (Ẩn khi in PDF) */}
+                            <div className={cx("sidebar", "noPrint")}>
+                                {/* Khối Bộ Lọc */}
+                                <div className={cx("filterCard")}>
+                                    <div className={cx("filterHeader")}>
+                                        <span>🔍 Bộ lọc lịch sử</span>
+                                        <button
+                                            type="button"
+                                            className={cx("resetBtn")}
+                                            onClick={() => {
+                                                setRiskFilter("ALL");
+                                                setTimeFilter("ALL");
+                                                setSearchTerm("");
                                             }}
+                                        >
+                                            Đặt lại
+                                        </button>
+                                    </div>
+
+                                    <input
+                                        type="text"
+                                        placeholder="Tìm triệu chứng..."
+                                        value={searchTerm}
+                                        onChange={(e) =>
+                                            setSearchTerm(e.target.value)
+                                        }
+                                        className={cx("searchInput")}
+                                    />
+
+                                    <div className={cx("filterGrid")}>
+                                        <div>
+                                            <label>Mức độ rủi ro:</label>
+                                            <select
+                                                value={riskFilter}
+                                                onChange={(e) =>
+                                                    setRiskFilter(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            >
+                                                <option value="ALL">
+                                                    Tất cả mức độ
+                                                </option>
+                                                <option value="CRITICAL">
+                                                    🔴 Cấp cứu (CRITICAL)
+                                                </option>
+                                                <option value="HIGH">
+                                                    🟠 Cao (HIGH)
+                                                </option>
+                                                <option value="MODERATE">
+                                                    🟡 Trung bình (MODERATE)
+                                                </option>
+                                                <option value="LOW">
+                                                    🟢 Thấp (LOW)
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label>Thời gian:</label>
+                                            <select
+                                                value={timeFilter}
+                                                onChange={(e) =>
+                                                    setTimeFilter(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            >
+                                                <option value="ALL">
+                                                    Toàn bộ thời gian
+                                                </option>
+                                                <option value="7_DAYS">
+                                                    7 ngày gần nhất
+                                                </option>
+                                                <option value="30_DAYS">
+                                                    30 ngày gần nhất
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className={cx("resultCount")}>
+                                        Hiển thị:{" "}
+                                        <strong>
+                                            {filteredHistory.length}
+                                        </strong>{" "}
+                                        / {history.length} bản ghi
+                                    </div>
+                                </div>
+
+                                {/* Danh sách bản ghi sau lọc */}
+                                <div className={cx("historyList")}>
+                                    {filteredHistory.length === 0 ? (
+                                        <div className={cx("emptyItem")}>
+                                            Không tìm thấy bản ghi phù hợp.
+                                        </div>
+                                    ) : (
+                                        filteredHistory.map((item) => (
+                                            <div
+                                                key={item._id}
+                                                className={cx(
+                                                    "card",
+                                                    "historyItemCard",
+                                                    `historyItemCard--${item.riskLevel}`,
+                                                    {
+                                                        active:
+                                                            selectedItem?._id ===
+                                                            item._id,
+                                                    },
+                                                )}
+                                                onClick={() =>
+                                                    setSelectedItem(item)
+                                                }
+                                            >
+                                                <div className={cx("itemTop")}>
+                                                    <span
+                                                        className={cx(
+                                                            "dateText",
+                                                        )}
+                                                    >
+                                                        {new Date(
+                                                            item.createdAt,
+                                                        ).toLocaleDateString(
+                                                            "vi-VN",
+                                                        )}
+                                                    </span>
+                                                    <span
+                                                        className={cx(
+                                                            "badge",
+                                                            `badge--${item.riskLevel}`,
+                                                        )}
+                                                    >
+                                                        {item.riskLevel}
+                                                    </span>
+                                                </div>
+                                                <p
+                                                    className={cx(
+                                                        "summaryText",
+                                                    )}
+                                                >
+                                                    {item.symptomSummary}
+                                                </p>
+                                                {item.followUps &&
+                                                    item.followUps.length >
+                                                        0 && (
+                                                        <span
+                                                            className={cx(
+                                                                "followUpCount",
+                                                            )}
+                                                        >
+                                                            💬{" "}
+                                                            {
+                                                                item.followUps
+                                                                    .length
+                                                            }{" "}
+                                                            lần cập nhật
+                                                        </span>
+                                                    )}
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* CỘT PHẢI: CHI TIẾT & BẢN IN PDF */}
+                            <div className={cx("detailContent")}>
+                                {selectedItem ? (
+                                    <>
+                                        {/* Khối Thanh Công Cụ Thao Tác (Ẩn khi in) */}
+                                        <div
+                                            className={cx(
+                                                "actionToolbar",
+                                                "noPrint",
+                                            )}
                                         >
                                             <span
                                                 style={{
-                                                    fontSize: "12px",
-                                                    color: "#6b7280",
+                                                    fontSize: "14px",
+                                                    color: "#475569",
                                                 }}
                                             >
-                                                {new Date(
-                                                    item.createdAt,
-                                                ).toLocaleDateString("vi-VN")}
+                                                Mã phiên:{" "}
+                                                <code>{selectedItem._id}</code>
                                             </span>
-                                            <span
+                                            <button
+                                                type="button"
+                                                onClick={handleExportPDF}
+                                                className={cx("exportPdfBtn")}
+                                            >
+                                                🖨️ Xuất Báo Cáo PDF
+                                            </button>
+                                        </div>
+
+                                        {/* GIAO DIỆN BÁO CÁO Y TẾ (Hiển thị cả trên web & Khi in PDF) */}
+                                        <div
+                                            className={cx(
+                                                "medicalReportCard",
+                                                `riskBorder--${selectedItem.riskLevel}`,
+                                            )}
+                                        >
+                                            {/* Header chuẩn y tế chỉ hiển thị khi in */}
+                                            <div
                                                 className={cx(
-                                                    "badge",
-                                                    `badge--${item.riskLevel}`,
+                                                    "printHeader",
+                                                    "printOnly",
                                                 )}
                                             >
-                                                {item.riskLevel}
-                                            </span>
-                                        </div>
-                                        <p
-                                            style={{
-                                                margin: 0,
-                                                fontWeight: 500,
-                                                fontSize: "14px",
-                                            }}
-                                        >
-                                            {item.symptomSummary}
-                                        </p>
-                                        {item.followUps &&
-                                            item.followUps.length > 0 && (
-                                                <span
-                                                    style={{
-                                                        fontSize: "11px",
-                                                        color: "#0284c7",
-                                                        marginTop: "4px",
-                                                        display: "block",
-                                                    }}
+                                                <div
+                                                    className={cx(
+                                                        "hospitalBrand",
+                                                    )}
                                                 >
-                                                    💬 {item.followUps.length}{" "}
-                                                    lần cập nhật
-                                                </span>
-                                            )}
-                                    </div>
-                                ))}
-                            </div>
+                                                    <h2>
+                                                        HEALTHSHIELD AI — HỆ
+                                                        THỐNG ĐÁNH GIÁ SỨC KHỎE
+                                                        SƠ BỘ
+                                                    </h2>
+                                                    <p>
+                                                        Báo cáo tóm tắt triệu
+                                                        chứng & khuyến nghị y
+                                                        khoa ban đầu
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    className={cx("reportMeta")}
+                                                >
+                                                    <div>
+                                                        Mã hồ sơ:{" "}
+                                                        {selectedItem._id}
+                                                    </div>
+                                                    <div>
+                                                        Ngày in:{" "}
+                                                        {new Date().toLocaleDateString(
+                                                            "vi-VN",
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                            {/* Chi tiết bản ghi & Form Follow-up */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: "16px",
-                                }}
-                            >
-                                {selectedItem && (
-                                    <>
+                                            {/* Thông tin bệnh nhân & Chỉ số sinh hiệu (Print & Web) */}
+                                            <div className={cx("patientBox")}>
+                                                <div
+                                                    className={cx(
+                                                        "patientGrid",
+                                                    )}
+                                                >
+                                                    <div>
+                                                        <strong>
+                                                            Họ và tên:
+                                                        </strong>{" "}
+                                                        {user?.fullName ||
+                                                            "Bệnh nhân"}
+                                                    </div>
+                                                    <div>
+                                                        <strong>Email:</strong>{" "}
+                                                        {user?.email}
+                                                    </div>
+                                                    <div>
+                                                        <strong>
+                                                            Thời gian phân tích:
+                                                        </strong>{" "}
+                                                        {new Date(
+                                                            selectedItem.createdAt,
+                                                        ).toLocaleString(
+                                                            "vi-VN",
+                                                        )}
+                                                    </div>
+                                                    {patientVitals && (
+                                                        <>
+                                                            <div>
+                                                                <strong>
+                                                                    Giới tính:
+                                                                </strong>{" "}
+                                                                {patientVitals.biologicalSex ===
+                                                                "FEMALE"
+                                                                    ? "Nữ"
+                                                                    : "Nam"}
+                                                            </div>
+                                                            <div>
+                                                                <strong>
+                                                                    Nhóm máu:
+                                                                </strong>{" "}
+                                                                {patientVitals.bloodType ||
+                                                                    "N/A"}
+                                                            </div>
+                                                            <div>
+                                                                <strong>
+                                                                    Huyết áp:
+                                                                </strong>{" "}
+                                                                {patientVitals
+                                                                    .bloodPressure
+                                                                    ?.systolic
+                                                                    ? `${patientVitals.bloodPressure.systolic}/${patientVitals.bloodPressure.diastolic} mmHg`
+                                                                    : "Chưa ghi nhận"}
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Trạng thái rủi ro */}
+                                            <div className={cx("riskSection")}>
+                                                <span
+                                                    className={cx(
+                                                        "badge",
+                                                        `badge--${selectedItem.riskLevel}`,
+                                                    )}
+                                                >
+                                                    Mức Độ Nguy Cơ:{" "}
+                                                    {selectedItem.riskLevel}
+                                                </span>
+                                            </div>
+
+                                            <div className={cx("reportRow")}>
+                                                <strong>
+                                                    Tóm tắt triệu chứng:
+                                                </strong>
+                                                <p>
+                                                    {
+                                                        selectedItem.symptomSummary
+                                                    }
+                                                </p>
+                                            </div>
+
+                                            <div className={cx("reportRow")}>
+                                                <strong>
+                                                    Phân tích & Giải thích y tế:
+                                                </strong>
+                                                <p>
+                                                    {
+                                                        selectedItem.riskExplanation
+                                                    }
+                                                </p>
+                                            </div>
+
+                                            {selectedItem.possibleCauses
+                                                ?.length > 0 && (
+                                                <div
+                                                    className={cx(
+                                                        "reportSection",
+                                                    )}
+                                                >
+                                                    <h4>
+                                                        Nguyên nhân tiềm năng có
+                                                        thể gặp:
+                                                    </h4>
+                                                    <ul>
+                                                        {selectedItem.possibleCauses.map(
+                                                            (c, i) => (
+                                                                <li key={i}>
+                                                                    {c}
+                                                                </li>
+                                                            ),
+                                                        )}
+                                                    </ul>
+                                                </div>
+                                            )}
+
+                                            {selectedItem.recommendedActions
+                                                ?.length > 0 && (
+                                                <div
+                                                    className={cx(
+                                                        "reportSection",
+                                                    )}
+                                                >
+                                                    <h4>
+                                                        Khuyến nghị hành động
+                                                        ban đầu:
+                                                    </h4>
+                                                    <ul>
+                                                        {selectedItem.recommendedActions.map(
+                                                            (a, i) => (
+                                                                <li key={i}>
+                                                                    {a}
+                                                                </li>
+                                                            ),
+                                                        )}
+                                                    </ul>
+                                                </div>
+                                            )}
+
+                                            {selectedItem.redFlags &&
+                                                selectedItem.redFlags.length >
+                                                    0 && (
+                                                    <div
+                                                        className={cx(
+                                                            "reportSection",
+                                                            "redFlagBox",
+                                                        )}
+                                                    >
+                                                        <h4
+                                                            style={{
+                                                                color: "#dc2626",
+                                                            }}
+                                                        >
+                                                            🚩 Cảnh báo nguy
+                                                            hiểm (Red Flags):
+                                                        </h4>
+                                                        <ul>
+                                                            {selectedItem.redFlags.map(
+                                                                (flag, i) => (
+                                                                    <li
+                                                                        key={i}
+                                                                        style={{
+                                                                            color: "#dc2626",
+                                                                            fontWeight: 500,
+                                                                        }}
+                                                                    >
+                                                                        {flag}
+                                                                    </li>
+                                                                ),
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                            {/* Khối Lịch sử Follow-up */}
+                                            {selectedItem.followUps &&
+                                                selectedItem.followUps.length >
+                                                    0 && (
+                                                    <div
+                                                        className={cx(
+                                                            "reportSection",
+                                                            "followUpLogSection",
+                                                        )}
+                                                    >
+                                                        <h4>
+                                                            Nhật ký theo dõi
+                                                            tiến triển sức khỏe:
+                                                        </h4>
+                                                        <div
+                                                            className={cx(
+                                                                "followUpTimeline",
+                                                            )}
+                                                        >
+                                                            {selectedItem.followUps.map(
+                                                                (f, idx) => (
+                                                                    <div
+                                                                        key={
+                                                                            f._id ||
+                                                                            idx
+                                                                        }
+                                                                        className={cx(
+                                                                            "followUpItem",
+                                                                        )}
+                                                                    >
+                                                                        <div
+                                                                            className={cx(
+                                                                                "fStatus",
+                                                                            )}
+                                                                        >
+                                                                            {getStatusText(
+                                                                                f.status,
+                                                                            )}
+                                                                        </div>
+                                                                        {f.note && (
+                                                                            <div
+                                                                                className={cx(
+                                                                                    "fNote",
+                                                                                )}
+                                                                            >
+                                                                                "
+                                                                                {
+                                                                                    f.note
+                                                                                }
+                                                                                "
+                                                                            </div>
+                                                                        )}
+                                                                        <div
+                                                                            className={cx(
+                                                                                "fDate",
+                                                                            )}
+                                                                        >
+                                                                            {new Date(
+                                                                                f.createdAt,
+                                                                            ).toLocaleString(
+                                                                                "vi-VN",
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                            {/* Disclaimer */}
+                                            <div className={cx("disclaimer")}>
+                                                {selectedItem.medicalDisclaimer ||
+                                                    "Đây là đánh giá rủi ro sơ bộ dựa trên thông tin cung cấp, không thay thế cho chẩn đoán hoặc điều trị y tế chuyên nghiệp. Nếu triệu chứng nghiêm trọng, hãy gọi cấp cứu hoặc đến cơ sở y tế gần nhất."}
+                                            </div>
+
+                                            {/* Chữ ký xác nhận dành riêng cho trang in PDF */}
+                                            <div
+                                                className={cx(
+                                                    "signatureGrid",
+                                                    "printOnly",
+                                                )}
+                                            >
+                                                <div>
+                                                    <p>Người lập báo cáo</p>
+                                                    <br />
+                                                    <br />
+                                                    <strong>
+                                                        {user?.fullName ||
+                                                            "Người dùng"}
+                                                    </strong>
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                        Bác sĩ / Nhân viên tiếp
+                                                        nhận
+                                                    </p>
+                                                    <br />
+                                                    <br />
+                                                    <span>
+                                                        (Ký, ghi rõ họ tên)
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* FORM CẬP NHẬT FOLLOW-UP (Ẩn khi in PDF) */}
                                         <div
                                             className={cx(
                                                 "card",
-                                                "resultCard",
-                                                `resultCard--${selectedItem.riskLevel}`,
+                                                "followUpCard",
+                                                "noPrint",
                                             )}
                                         >
-                                            <span
-                                                className={cx(
-                                                    "badge",
-                                                    `badge--${selectedItem.riskLevel}`,
-                                                )}
-                                            >
-                                                Mức Độ Rủi Ro:{" "}
-                                                {selectedItem.riskLevel}
-                                            </span>
-                                            <p>
-                                                <strong>
-                                                    Thời gian đánh giá:
-                                                </strong>{" "}
-                                                {new Date(
-                                                    selectedItem.createdAt,
-                                                ).toLocaleString("vi-VN")}
-                                            </p>
-                                            <p>
-                                                <strong>Tóm tắt:</strong>{" "}
-                                                {selectedItem.symptomSummary}
-                                            </p>
-                                            <p>
-                                                <strong>Giải thích:</strong>{" "}
-                                                {selectedItem.riskExplanation}
-                                            </p>
-                                        </div>
-
-                                        {/* Khối Cập Nhật Tiến Triển (Follow-up UI Form) */}
-                                        <div
-                                            className={cx("card")}
-                                            style={{
-                                                background: "#f8fafc",
-                                                border: "1px solid #e2e8f0",
-                                            }}
-                                        >
-                                            <h3
-                                                style={{
-                                                    marginTop: 0,
-                                                    fontSize: "16px",
-                                                    marginBottom: "12px",
-                                                }}
-                                            >
+                                            <h3>
                                                 🔄 Cập Nhật Tiến Triển Sau Đánh
                                                 Giá
                                             </h3>
@@ -310,18 +786,9 @@ export default function AssessmentHistoryPage() {
                                                 onSubmit={handleFollowUpSubmit}
                                             >
                                                 <div
-                                                    style={{
-                                                        marginBottom: "12px",
-                                                    }}
+                                                    className={cx("formGroup")}
                                                 >
-                                                    <label
-                                                        style={{
-                                                            display: "block",
-                                                            fontSize: "14px",
-                                                            marginBottom: "4px",
-                                                            fontWeight: 500,
-                                                        }}
-                                                    >
+                                                    <label>
                                                         Diễn tiến sức khỏe hiện
                                                         tại:
                                                     </label>
@@ -332,12 +799,6 @@ export default function AssessmentHistoryPage() {
                                                                 e.target.value,
                                                             )
                                                         }
-                                                        style={{
-                                                            width: "100%",
-                                                            padding: "8px",
-                                                            borderRadius: "6px",
-                                                            border: "1px solid #ccc",
-                                                        }}
                                                     >
                                                         <option value="IMPROVED">
                                                             🟢 Đã thuyên giảm /
@@ -354,18 +815,9 @@ export default function AssessmentHistoryPage() {
                                                 </div>
 
                                                 <div
-                                                    style={{
-                                                        marginBottom: "12px",
-                                                    }}
+                                                    className={cx("formGroup")}
                                                 >
-                                                    <label
-                                                        style={{
-                                                            display: "block",
-                                                            fontSize: "14px",
-                                                            marginBottom: "4px",
-                                                            fontWeight: 500,
-                                                        }}
-                                                    >
+                                                    <label>
                                                         Ghi chú thêm (không bắt
                                                         buộc):
                                                     </label>
@@ -376,134 +828,31 @@ export default function AssessmentHistoryPage() {
                                                                 e.target.value,
                                                             )
                                                         }
-                                                        placeholder="VD: Đã uống thuốc hạ sốt, hiện tại còn sốt nhẹ 37.8 độ..."
+                                                        placeholder="VD: Đã uống thuốc theo đơn, hiện tại các cơn đau đã giảm dần..."
                                                         rows={2}
-                                                        style={{
-                                                            width: "100%",
-                                                            padding: "8px",
-                                                            borderRadius: "6px",
-                                                            border: "1px solid #ccc",
-                                                            resize: "vertical",
-                                                        }}
                                                     />
                                                 </div>
 
                                                 <button
                                                     type="submit"
                                                     disabled={submitting}
-                                                    style={{
-                                                        padding: "8px 16px",
-                                                        backgroundColor:
-                                                            "#0284c7",
-                                                        color: "#fff",
-                                                        border: "none",
-                                                        borderRadius: "6px",
-                                                        cursor: "pointer",
-                                                        fontWeight: 500,
-                                                    }}
+                                                    className={cx("submitBtn")}
                                                 >
                                                     {submitting
                                                         ? "Đang gửi..."
                                                         : "Gửi Cập Nhật Follow-up"}
                                                 </button>
                                             </form>
-
-                                            {/* Danh sách các lần theo dõi đã ghi nhận */}
-                                            {selectedItem.followUps &&
-                                                selectedItem.followUps.length >
-                                                    0 && (
-                                                    <div
-                                                        style={{
-                                                            marginTop: "20px",
-                                                            borderTop:
-                                                                "1px solid #e2e8f0",
-                                                            paddingTop: "12px",
-                                                        }}
-                                                    >
-                                                        <h4
-                                                            style={{
-                                                                margin: "0 0 8px 0",
-                                                                fontSize:
-                                                                    "14px",
-                                                            }}
-                                                        >
-                                                            Lịch sử cập nhật:
-                                                        </h4>
-                                                        <div
-                                                            style={{
-                                                                display: "flex",
-                                                                flexDirection:
-                                                                    "column",
-                                                                gap: "8px",
-                                                            }}
-                                                        >
-                                                            {selectedItem.followUps.map(
-                                                                (f, idx) => (
-                                                                    <div
-                                                                        key={
-                                                                            f._id ||
-                                                                            idx
-                                                                        }
-                                                                        style={{
-                                                                            fontSize:
-                                                                                "13px",
-                                                                            background:
-                                                                                "#fff",
-                                                                            padding:
-                                                                                "8px",
-                                                                            borderRadius:
-                                                                                "6px",
-                                                                            border: "1px solid #cbd5e1",
-                                                                        }}
-                                                                    >
-                                                                        <div
-                                                                            style={{
-                                                                                fontWeight: 500,
-                                                                            }}
-                                                                        >
-                                                                            {getStatusText(
-                                                                                f.status,
-                                                                            )}
-                                                                        </div>
-                                                                        {f.note && (
-                                                                            <div
-                                                                                style={{
-                                                                                    color: "#475569",
-                                                                                    marginTop:
-                                                                                        "2px",
-                                                                                }}
-                                                                            >
-                                                                                "
-                                                                                {
-                                                                                    f.note
-                                                                                }
-
-                                                                                "
-                                                                            </div>
-                                                                        )}
-                                                                        <div
-                                                                            style={{
-                                                                                fontSize:
-                                                                                    "11px",
-                                                                                color: "#94a3b8",
-                                                                                marginTop:
-                                                                                    "4px",
-                                                                            }}
-                                                                        >
-                                                                            {new Date(
-                                                                                f.createdAt,
-                                                                            ).toLocaleString(
-                                                                                "vi-VN",
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
-                                                                ),
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                )}
                                         </div>
                                     </>
+                                ) : (
+                                    <div
+                                        className={cx("card")}
+                                        style={{ textAlign: "center" }}
+                                    >
+                                        Vui lòng chọn một phiên đánh giá từ danh
+                                        sách bên trái.
+                                    </div>
                                 )}
                             </div>
                         </div>
