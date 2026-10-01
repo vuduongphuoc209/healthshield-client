@@ -8,45 +8,157 @@
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    padding: 20px;
+    padding: $space-4;
+    animation: fadeIn 0.2s ease-out;
 }
 
 .modal {
     background-color: $surface-color;
     border-top: 8px solid $danger-color;
-    border-radius: $radius-lg;
-    padding: 28px;
-    max-width: 500px;
+    border-radius: $radius-xl;
+    padding: $space-6;
+    max-width: 540px;
     width: 100%;
     box-shadow: $shadow-lg;
-    animation: popIn 0.3s ease-out;
+    animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    gap: $space-3;
+    margin-bottom: $space-4;
+}
+
+.alertIcon {
+    font-size: 2rem;
+    line-height: 1;
 }
 
 .title {
     color: $danger-color;
-    font-size: 1.35rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+    margin: 0 0 $space-1;
+}
+
+.subtitle {
+    font-size: 0.8125rem;
+    color: $text-muted;
+}
+
+// Bảng F.A.S.T
+.fastBox {
+    background-color: $danger-soft;
+    border: 1px solid $danger-border;
+    border-radius: $radius-md;
+    padding: $space-3;
+    margin-bottom: $space-4;
+}
+
+.fastTitle {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: $text-danger;
+    margin-bottom: $space-2;
+    text-transform: uppercase;
+}
+
+.fastGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-2;
+}
+
+.fastItem {
+    background: $surface-color;
+    padding: $space-2;
+    border-radius: $radius-sm;
+    font-size: 0.75rem;
+
+    strong {
+        display: block;
+        color: $danger-color;
+        font-weight: 700;
+    }
+
+    span {
+        color: $text-body;
+    }
+}
+
+.instructionsBox {
+    background: $surface-muted;
+    border-radius: $radius-md;
+    padding: $space-4;
+    margin-bottom: $space-5;
+
+    h4 {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        margin: 0 0 $space-2;
+        color: $text-main;
+    }
+
+    ul {
+        margin: 0;
+        padding-left: $space-5;
+        font-size: 0.8125rem;
+        line-height: 1.5;
+        color: $text-body;
+
+        li {
+            margin-bottom: $space-1;
+        }
+    }
+}
+
+.actionGroup {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    gap: $space-2;
+    margin-bottom: $space-3;
 }
 
 .callBtn {
     display: block;
     width: 100%;
-    padding: 14px;
+    padding: 13px;
     background-color: $danger-color;
     color: $white;
     text-align: center;
     font-weight: 700;
-    font-size: 1.1rem;
-    border-radius: $radius-md;
+    font-size: 1.05rem;
+    border-radius: $radius-pill;
     text-decoration: none;
-    margin: 20px 0 10px;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+    transition:
+        transform $transition-fast,
+        background-color $transition-fast;
 
     &:hover {
-        background-color: darken($danger-color, 10%);
+        background-color: darken($danger-color, 6%);
+        transform: translateY(-1px);
+    }
+}
+
+.mapBtn {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    background-color: $surface-muted;
+    border: 1px solid $border-color;
+    color: $text-main;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-radius: $radius-pill;
+    text-decoration: none;
+    transition: background-color $transition-fast;
+
+    &:hover {
+        background-color: $surface-hover;
     }
 }
 
@@ -54,19 +166,32 @@
     width: 100%;
     padding: 10px;
     background: transparent;
-    border: 1px solid $border-color;
-    border-radius: $radius-md;
+    border: none;
     color: $text-muted;
+    font-size: 0.8125rem;
     cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 @keyframes popIn {
     from {
-        transform: scale(0.9);
+        transform: scale(0.94);
         opacity: 0;
     }
     to {
         transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
         opacity: 1;
     }
 }

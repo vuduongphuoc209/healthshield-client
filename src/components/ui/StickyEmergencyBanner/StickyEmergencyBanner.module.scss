@@ -1,0 +1,98 @@
+@import "@/styles/variables";
+
+.banner {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 900;
+    background-color: $danger-color;
+    color: $white;
+    padding: $space-3 $space-5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: $shadow-md;
+    animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.pulseIcon {
+    animation: pulse 1.2s infinite ease-in-out;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+}
+
+.callLink {
+    background: $white;
+    color: $danger-color;
+    padding: 6px 14px;
+    border-radius: $radius-pill;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform $transition-fast;
+
+    &:hover {
+        transform: scale(1.03);
+    }
+}
+
+.guideBtn {
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: $white;
+    padding: 6px 12px;
+    border-radius: $radius-pill;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.25);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .banner {
+        flex-direction: column;
+        gap: $space-2;
+        text-align: center;
+        padding: $space-3 $space-4;
+    }
+
+    .content {
+        justify-content: center;
+        font-size: 0.8125rem;
+    }
+}

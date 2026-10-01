@@ -8,25 +8,9 @@ import { api } from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import { ProtectedRoute, NotificationBell, EmergencyModal } from "@/components";
 import styles from "./page.module.scss";
+import { IChatSession, IChatMessage } from "@/types";
 
 const cx = classNames.bind(styles);
-
-interface IChatMessage {
-    _id?: string;
-    role: "user" | "model";
-    content: string;
-    isEmergencyAlert?: boolean;
-    timestamp: string;
-}
-
-interface IChatSession {
-    _id: string;
-    title: string;
-    status: "ACTIVE" | "COMPLETED";
-    createdAt: string;
-    updatedAt: string;
-    messages?: IChatMessage[];
-}
 
 const QUICK_PROMPTS = [
     "Tôi bị đau đầu kèm chóng mặt nhẹ từ sáng nay",

@@ -7,40 +7,9 @@ import { api } from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import { ProtectedRoute, NotificationBell } from "@/components";
 import styles from "./page.module.scss";
+import { AssessmentItem, PatientVitals, IFollowUp } from "@/types";
 
 const cx = classNames.bind(styles);
-
-interface IFollowUp {
-    _id?: string;
-    status: "IMPROVED" | "UNCHANGED" | "WORSED";
-    note?: string;
-    createdAt: string;
-}
-
-interface AssessmentItem {
-    _id: string;
-    symptomSummary: string;
-    riskLevel: "LOW" | "MODERATE" | "HIGH" | "CRITICAL";
-    riskExplanation: string;
-    possibleCauses: string[];
-    recommendedActions: string[];
-    redFlags?: string[];
-    medicalDisclaimer?: string;
-    createdAt: string;
-    followUps?: IFollowUp[];
-}
-
-interface PatientVitals {
-    biologicalSex?: string;
-    bloodType?: string;
-    heightCm?: number;
-    weightKg?: number;
-    bloodPressure?: {
-        systolic?: number;
-        diastolic?: number;
-    };
-    preExistingConditions?: string[];
-}
 
 export default function AssessmentHistoryPage() {
     const { user } = useAuth();
@@ -713,6 +682,7 @@ export default function AssessmentHistoryPage() {
                                                                                 {
                                                                                     f.note
                                                                                 }
+
                                                                                 "
                                                                             </div>
                                                                         )}

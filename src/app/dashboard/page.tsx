@@ -6,29 +6,26 @@ import classNames from "classnames/bind";
 import { api } from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./page.module.scss";
-import { ProtectedRoute } from "@/components";
+import {
+    ProtectedRoute,
+    EmergencyModal,
+    NotificationBell,
+    StickyEmergencyBanner,
+} from "@/components";
 import {
     FileProtectOutlined,
     HistoryOutlined,
 } from "@ant-design/icons/es/icons/index";
+import { AIAnalysisResult } from "@/types";
 
 const cx = classNames.bind(styles);
-
-interface AIAnalysisResult {
-    symptomSummary: string;
-    possibleCauses: string[];
-    riskLevel: "LOW" | "MODERATE" | "HIGH" | "CRITICAL";
-    riskExplanation: string;
-    recommendedActions: string[];
-    redFlags: string[];
-    medicalDisclaimer: string;
-}
 
 export function DashboardPage() {
     const [symptoms, setSymptoms] = useState("");
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [result, setResult] = useState<AIAnalysisResult | null>(null);
+    const [showEmergencyModal, setShowEmergencyModal] = useState(false);
     const { user, logout } = useAuth();
     const router = useRouter();
 
@@ -82,6 +79,10 @@ export function DashboardPage() {
 
     return (
         <ProtectedRoute>
+            <StickyEmergencyBanner
+                visible={result?.riskLevel === "CRITICAL"}
+                onViewGuide={() => setShowEmergencyModal(true)}
+            />
             <div className={cx("container")}>
                 <div className={cx("wrapper")}>
                     <header className={cx("header")}>
@@ -132,6 +133,7 @@ export function DashboardPage() {
                                 >
                                     Đăng xuất
                                 </button>
+                                <NotificationBell />
                             </nav>
                         </div>
                     </header>
@@ -234,6 +236,21 @@ export function DashboardPage() {
                         </div>
                     )}
                 </div>
+                {/* Emergency Modal Triage */}
+                {result && (
+                    <EmergencyModal
+                        isOpen={showEmergencyModal}
+                        onClose={() => setShowEmergencyModal(false)}
+                        actions={result.recommendedActions}
+                        category={
+                            result.redFlags?.some((f) =>
+                                /đột quỵ|méo miệng|tê yếu/i.test(f),
+                            )
+                                ? "STROKE_FAST"
+                                : "GENERAL"
+                        }
+                    />
+                )}
             </div>
         </ProtectedRoute>
     );
