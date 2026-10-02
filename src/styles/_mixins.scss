@@ -1,1 +1,22 @@
-// Mixin responsive, flexbox utils
+// src/styles/_mixins.scss
+@import "./variables";
+
+// button dùng chung cho các button có border-radius lớn, ví dụ như button dạng pill
+@mixin pill-button {
+    padding: 9px 14px;
+    background-color: $surface-color;
+    border: 1px solid $border-color;
+    border-radius: $radius-pill;
+    color: $text-muted;
+    cursor: pointer;
+    transition:
+        background-color $transition-base,
+        border-color $transition-base,
+        color $transition-base;
+
+    &:hover {
+        background-color: $surface-blue;
+        color: $text-main;
+        border-color: $text-main;
+    }
+}

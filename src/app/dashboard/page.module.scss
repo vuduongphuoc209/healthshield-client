@@ -1,4 +1,5 @@
 @import "@/styles/variables";
+@import "@/styles/mixins";
 
 .container {
     min-height: 100vh;
@@ -48,34 +49,23 @@
     gap: $space-3;
 }
 
+.Btn {
+    @include pill-button;
+}
+
 .logoutBtn {
-    padding: 9px 14px;
+    margin-left: $space-3;
+    padding: 4px 10px;
     background-color: $surface-color;
-    border: 1px solid $border-color;
+    border: 1px solid $text-danger;
     border-radius: $radius-pill;
     color: $text-muted;
     cursor: pointer;
-    transition:
-        background-color $transition-base,
-        border-color $transition-base,
-        color $transition-base;
+    color: $danger-color;
     &:hover {
-        background-color: $danger-soft;
-        color: $danger-color;
-        border-color: $danger-border;
-    }
-}
-
-.assistantBtn {
-    background: $primary-soft;
-    border-color: $soft-blue-ring;
-    color: $primary-dark;
-    font-weight: 600;
-
-    &:hover {
-        background: $surface-blue;
-        border-color: $soft-blue-ring-strong;
-        color: $primary-dark;
+        background-color: $surface-danger;
+        color: $text-danger;
+        border-color: $text-danger;
     }
 }
 
@@ -204,7 +194,7 @@
         padding: $space-5 $space-4;
     }
 
-    .logoutBtn {
+    .Btn {
         padding-inline: $space-2;
         font-size: 0.8rem;
     }
@@ -215,7 +205,7 @@
         width: 100%;
     }
 
-    .logoutBtn {
+    .Btn {
         width: 100%;
     }
 

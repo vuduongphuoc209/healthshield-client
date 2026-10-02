@@ -185,19 +185,13 @@ export default function AssessmentHistoryPage() {
                                 cho bác sĩ
                             </p>
                         </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "10px",
-                            }}
-                        >
+                        <div className={cx("navActions")}>
                             <NotificationBell />
                             <Link
                                 href="/dashboard"
                                 className={cx("historyLink")}
                             >
-                                ← Quay lại Phân Tích
+                                ← Quay lại Dashboard
                             </Link>
                         </div>
                     </header>

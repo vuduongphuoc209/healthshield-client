@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { ProtectedRoute, NotificationBell, EmergencyModal } from "@/components";
 import styles from "./page.module.scss";
 import { IChatSession, IChatMessage } from "@/types";
+import { HistoryOutlined } from "@ant-design/icons/es/icons/index";
 
 const cx = classNames.bind(styles);
 
@@ -176,14 +177,20 @@ export default function AIAssistantPage() {
                         </div>
                         <div className={cx("navActions")}>
                             <NotificationBell />
-                            <Link href="/dashboard" className={cx("navLink")}>
-                                Form Phân Tích
+                            <Link
+                                href="/dashboard"
+                                className={cx("navLink", "Btn")}
+                            >
+                                ← Quay lại Dashboard
                             </Link>
                             <Link
                                 href="/dashboard/history"
-                                className={cx("navLink")}
+                                className={cx("navLink", "Btn")}
                             >
-                                📜 Lịch Sử
+                                <HistoryOutlined
+                                    style={{ marginRight: "8px" }}
+                                />{" "}
+                                Lịch Sử
                             </Link>
                         </div>
                     </header>

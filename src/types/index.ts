@@ -3,3 +3,4 @@ export * from "./ai-analysis";
 export * from "./chat";
 export * from "./health-profile";
 export * from "./safety";
+export * from "./analytics";

@@ -1,4 +1,5 @@
 @import "@/styles/variables";
+@import "@/styles/mixins";
 
 .container {
     min-height: 100vh;
@@ -24,17 +25,7 @@
 }
 
 .historyLink {
-    padding: 8px 16px;
-    background-color: $surface-muted;
-    color: $text-body;
-    border-radius: $radius-md;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background-color 0.2s;
-
-    &:hover {
-        background-color: $surface-hover;
-    }
+    @include pill-button;
 }
 
 .mainLayout {
@@ -490,6 +481,11 @@
 
     .exportPdfBtn {
         justify-content: center;
+    }
+
+    .navActions {
+        width: 100%;
+        justify-content: space-between;
     }
 }
 

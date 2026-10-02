@@ -13,6 +13,7 @@ import {
     StickyEmergencyBanner,
 } from "@/components";
 import {
+    BarChartOutlined,
     FileProtectOutlined,
     HistoryOutlined,
 } from "@ant-design/icons/es/icons/index";
@@ -92,35 +93,32 @@ export function DashboardPage() {
                         <div className={cx("headerMeta")}>
                             <p className={cx("greeting")}>
                                 Xin chào, {user?.fullName || "Người dùng"}
+                                <button
+                                    onClick={handleLogout}
+                                    className={cx("logoutBtn")}
+                                >
+                                    Đăng xuất
+                                </button>
                             </p>
+
                             <nav
                                 className={cx("navActions")}
                                 aria-label="Điều hướng dashboard"
                             >
                                 {/* Nút truy cập Trợ Lý AI Chat Sprint 7 */}
+
                                 <button
                                     type="button"
                                     onClick={() =>
                                         router.push("/dashboard/assistant")
                                     }
-                                    className={cx("logoutBtn", "assistantBtn")}
+                                    className={cx("Btn")}
                                 >
                                     💬 Trợ Lý AI
                                 </button>
                                 <button
-                                    onClick={() =>
-                                        router.push("/dashboard/history")
-                                    }
-                                    className={cx("logoutBtn")}
-                                >
-                                    <HistoryOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    Lịch sử
-                                </button>
-                                <button
                                     onClick={() => router.push("/profile")}
-                                    className={cx("logoutBtn")}
+                                    className={cx("Btn")}
                                 >
                                     <FileProtectOutlined
                                         style={{ marginRight: "8px" }}
@@ -128,11 +126,29 @@ export function DashboardPage() {
                                     Hồ sơ sức khỏe
                                 </button>
                                 <button
-                                    onClick={handleLogout}
-                                    className={cx("logoutBtn")}
+                                    onClick={() =>
+                                        router.push("/dashboard/analytics")
+                                    }
+                                    className={cx("Btn")}
                                 >
-                                    Đăng xuất
+                                    <BarChartOutlined
+                                        style={{ marginRight: "8px" }}
+                                    />
+                                    Thống kê
                                 </button>
+
+                                <button
+                                    onClick={() =>
+                                        router.push("/dashboard/history")
+                                    }
+                                    className={cx("Btn")}
+                                >
+                                    <HistoryOutlined
+                                        style={{ marginRight: "8px" }}
+                                    />
+                                    Lịch sử
+                                </button>
+
                                 <NotificationBell />
                             </nav>
                         </div>

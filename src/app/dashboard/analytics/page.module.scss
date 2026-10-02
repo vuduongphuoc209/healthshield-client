@@ -1,0 +1,216 @@
+@import "@/styles/variables";
+@import "@/styles/mixins";
+
+.container {
+    min-height: 100vh;
+    padding: $space-6 $space-4;
+}
+
+.wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: $space-8;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+.error {
+    color: $danger-color;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $space-6;
+
+    h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0 0 $space-1;
+        color: $text-main;
+        letter-spacing: -0.02em;
+    }
+    p {
+        margin: 0;
+        color: $text-muted;
+        font-size: 0.9375rem;
+    }
+}
+
+.navActions {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+}
+
+.navLink {
+    @include pill-button;
+}
+
+// Stats Cards
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: $space-4;
+    margin-bottom: $space-5;
+}
+
+.statCard {
+    background: $surface-color;
+    border: 1px solid $border-color;
+    border-radius: $radius-lg;
+    padding: $space-4;
+    box-shadow: $shadow-sm;
+}
+
+.statLabel {
+    display: block;
+    font-size: 0.8125rem;
+    color: $text-muted;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: $space-2;
+}
+
+.statValue {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: $text-main;
+
+    &.textPrimary {
+        color: $primary-color;
+    }
+    &.textDanger {
+        color: $danger-color;
+    }
+    &.textSuccess {
+        color: $success-color;
+    }
+}
+
+.statSuffix {
+    font-size: 1rem;
+    color: $text-muted;
+    font-weight: 500;
+}
+
+// Main Grid
+.mainGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-4;
+}
+
+.card {
+    background: $surface-color;
+    border: 1px solid $border-color;
+    border-radius: $radius-lg;
+    padding: $space-5;
+    box-shadow: $shadow-sm;
+
+    h3 {
+        font-size: 1.125rem;
+        margin: 0 0 $space-4;
+        color: $text-main;
+        border-bottom: 1px solid $border-light;
+        padding-bottom: $space-2;
+    }
+
+    &.fullWidth {
+        grid-column: 1 / -1;
+    }
+}
+
+.chartWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 250px;
+}
+
+.emptyText {
+    color: $text-muted;
+    font-size: 0.875rem;
+}
+
+.chartLegend {
+    display: flex;
+    justify-content: center;
+    gap: $space-4;
+    margin-top: $space-4;
+    flex-wrap: wrap;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: $text-body;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+// Vitals Widget
+.vitalsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-4;
+}
+
+.vitalItem {
+    background: $bg-light;
+    padding: $space-3;
+    border-radius: $radius-md;
+    border: 1px solid $border-light;
+}
+
+.vLabel {
+    display: block;
+    font-size: 0.75rem;
+    color: $text-muted;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: $space-1;
+}
+
+.vValue {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $text-main;
+    margin-bottom: 2px;
+}
+
+.vDesc {
+    font-size: 0.75rem;
+    color: $primary-color;
+    font-weight: 500;
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: $space-3;
+
+        .navActions {
+            width: 100%;
+            justify-content: space-between;
+        }
+    }
+}
