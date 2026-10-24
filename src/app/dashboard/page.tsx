@@ -16,6 +16,7 @@ import {
     BarChartOutlined,
     FileProtectOutlined,
     HistoryOutlined,
+    SmileOutlined,
 } from "@ant-design/icons/es/icons/index";
 import { AIAnalysisResult } from "@/types";
 
@@ -147,6 +148,15 @@ export function DashboardPage() {
                                         style={{ marginRight: "8px" }}
                                     />
                                     Lịch sử
+                                </button>
+                                <button
+                                    onClick={() => router.push("/doctor/case")}
+                                    className={cx("Btn")}
+                                >
+                                    <SmileOutlined
+                                        style={{ marginRight: "8px" }}
+                                    />
+                                    Bác sĩ
                                 </button>
 
                                 <NotificationBell />

@@ -1,0 +1,148 @@
+@use "@/styles/variables" as *;
+
+.doctorLayout {
+    display: grid;
+    grid-template-columns: 252px minmax(0, 1fr);
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 92% 0%, $soft-blue-ring, transparent 28%),
+        $bg-light;
+}
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $space-8;
+    width: 252px;
+    height: 100vh;
+    padding: $space-8 $space-5;
+    overflow-y: auto;
+    background: $surface-color;
+    border-right: 1px solid $soft-border;
+
+    h2 {
+        margin: 0;
+        color: $text-main;
+        font-size: 1.125rem;
+        font-weight: 700;
+        line-height: 1.35;
+    }
+
+    nav ul {
+        display: grid;
+        gap: $space-2;
+        margin: 0;
+        padding: 0;
+    }
+
+    nav li {
+        padding: 11px $space-3;
+        border-left: 3px solid transparent;
+        border-radius: 0 $radius-sm $radius-sm 0;
+        color: $text-muted;
+        font-size: 0.9375rem;
+        line-height: 1.4;
+    }
+
+    nav a {
+        display: block;
+        color: inherit;
+    }
+
+    nav .active {
+        border-left-color: $primary-color;
+        background: $primary-soft;
+        color: $primary-dark;
+        font-weight: 600;
+    }
+}
+
+.mainContent {
+    min-width: 0;
+    padding: $space-8;
+}
+
+.loader {
+    display: grid;
+    min-height: 100vh;
+    place-content: center;
+    justify-items: center;
+    gap: $space-3;
+    padding: $space-5;
+    background: $bg-light;
+    color: $text-muted;
+    font-size: 0.9375rem;
+
+    &::before {
+        width: 28px;
+        height: 28px;
+        border: 3px solid $border-blue;
+        border-top-color: $primary-color;
+        border-radius: 50%;
+        content: "";
+        animation: spin 800ms linear infinite;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 900px) {
+    .doctorLayout {
+        grid-template-columns: 220px minmax(0, 1fr);
+    }
+
+    .sidebar {
+        width: 220px;
+        padding-inline: $space-4;
+    }
+
+    .mainContent {
+        padding: $space-6;
+    }
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .doctorLayout {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        gap: $space-4;
+        padding: $space-4;
+        overflow: visible;
+        border-right: 0;
+        border-bottom: 1px solid $soft-border;
+
+        nav ul {
+            display: flex;
+            gap: $space-2;
+            overflow-x: auto;
+        }
+
+        nav li {
+            flex: 0 0 auto;
+            border: 0;
+            border-bottom: 2px solid transparent;
+            border-radius: $radius-sm;
+            white-space: nowrap;
+        }
+
+        nav .active {
+            border-bottom-color: $primary-color;
+        }
+    }
+
+    .mainContent {
+        padding: $space-5 $space-4;
+    }
+}

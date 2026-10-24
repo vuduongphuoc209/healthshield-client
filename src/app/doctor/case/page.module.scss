@@ -1,0 +1,437 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as mixins;
+
+.container {
+    width: 100%;
+    max-width: $content-width;
+    margin: 0 auto;
+    padding: $space-6 $space-4;
+    min-height: calc(100vh - 64px);
+}
+
+.header {
+    margin-bottom: $space-6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    h2 {
+        margin: 0;
+        color: $text-main;
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: 0;
+    }
+}
+
+.navLink {
+    @include mixins.pill-button;
+}
+
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.88fr) minmax(0, 1.45fr);
+    gap: $space-6;
+    align-items: start;
+}
+
+.caseList {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+    max-height: calc(100dvh - 180px);
+    overflow-y: auto;
+    padding: 1px $space-1 1px 1px;
+    overscroll-behavior: contain;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: $scrollbar-color;
+        border-radius: $radius-pill;
+    }
+}
+
+.caseCard {
+    width: 100%;
+    min-width: 0;
+    background: $surface-color;
+    padding: $space-4;
+    border-radius: $radius-md;
+    border: 1px solid $border-color;
+    box-shadow: $shadow-sm;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    transition:
+        background-color $transition-base,
+        border-color $transition-base,
+        box-shadow $transition-base;
+
+    &:hover {
+        background-color: $surface-hover;
+        border-color: $border-strong;
+    }
+
+    &:focus-visible {
+        outline: 3px solid $focus-ring;
+        outline-offset: 2px;
+    }
+
+    &.selected {
+        background-color: $surface-blue;
+        border-color: $primary-color;
+        box-shadow:
+            0 0 0 1px $primary-color,
+            $shadow-sm;
+    }
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $space-2;
+    margin-bottom: $space-2;
+}
+
+.patientName {
+    min-width: 0;
+    overflow: hidden;
+    font-weight: 600;
+    color: $text-main;
+    font-size: 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.riskBadge {
+    flex: 0 0 auto;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px $space-2;
+    border-radius: $radius-pill;
+    letter-spacing: 0;
+    text-transform: uppercase;
+
+    &.low {
+        background: $success-soft;
+        color: $success-color;
+    }
+    &.moderate {
+        background: $warning-soft;
+        color: $warning-color;
+    }
+    &.high {
+        background: $danger-soft;
+        color: $warning-color;
+        border: 1px solid rgba($warning-color, 0.3);
+    }
+    &.critical {
+        background: $surface-danger;
+        color: $danger-color;
+        border: 1px solid $danger-border;
+    }
+}
+
+.symptomsPreview {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 0 0 $space-2;
+    font-size: 14px;
+    color: $text-body;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.45;
+}
+
+.date {
+    font-size: 12px;
+    color: $text-subtle;
+}
+
+.reviewedNote {
+    margin-top: $space-4;
+    padding: $space-4;
+    border: 1px solid rgba($success-color, 0.24);
+    border-left: 4px solid $success-color;
+    border-radius: $radius-md;
+    background: $success-soft;
+
+    h3 {
+        margin: $space-3 0 $space-2;
+        color: $text-main;
+        font-size: 1rem;
+    }
+
+    p {
+        margin: 0;
+        color: $text-body;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+}
+
+.reviewedBadge {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: $radius-pill;
+    background: $surface-color;
+    color: $success-color;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.reviewMeta {
+    display: grid;
+    gap: $space-1;
+    margin-top: $space-3;
+    padding-top: $space-3;
+    border-top: 1px solid rgba($success-color, 0.18);
+    color: $text-muted;
+    font-size: 0.75rem;
+}
+
+.detailPane {
+    min-width: 0;
+    background: $surface-color;
+    padding: $space-6;
+    border-radius: $radius-md;
+    border: 1px solid $border-color;
+    box-shadow: $shadow-sm;
+
+    .section {
+        margin-bottom: $space-6;
+        padding-bottom: $space-5;
+        border-bottom: 1px solid $soft-border;
+
+        h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: $text-main;
+            margin: 0 0 $space-3;
+        }
+
+        p {
+            color: $text-body;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: $space-2;
+            overflow-wrap: anywhere;
+
+            strong {
+                color: $text-main;
+            }
+        }
+    }
+}
+
+.redFlags {
+    margin-top: $space-3;
+    padding: $space-3 $space-4;
+    background: $danger-soft;
+    border: 1px solid $danger-border;
+    border-radius: $radius-sm;
+    color: $text-danger;
+    font-size: 14px;
+
+    ul {
+        margin: $space-1 0 0 $space-4;
+        padding: 0;
+
+        li {
+            list-style: disc;
+            margin-bottom: $space-1;
+        }
+    }
+}
+
+.reviewForm {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+
+    h3 {
+        font-size: 17px;
+        font-weight: 600;
+        color: $text-main;
+        margin: 0;
+    }
+
+    textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: $space-3;
+        background: $surface-raised;
+        border: 1px solid $border-color;
+        border-radius: $radius-md;
+        color: $text-main;
+        font-size: 15px;
+        line-height: 1.5;
+        transition:
+            background-color $transition-base,
+            border-color $transition-base,
+            box-shadow $transition-base;
+        resize: vertical;
+
+        &:focus {
+            outline: none;
+            background: $surface-color;
+            border-color: $primary-color;
+            box-shadow: 0 0 0 4px $focus-ring;
+        }
+
+        &::placeholder {
+            color: $text-subtle;
+        }
+    }
+
+    button {
+        @include mixins.pill-button;
+        align-self: flex-end;
+        padding: 10px $space-5;
+        background-color: $primary-color;
+        color: $text-on-color;
+        border-color: transparent;
+        font-weight: 500;
+        font-size: 14px;
+        box-shadow: $shadow-sm;
+        transition:
+            background-color $transition-fast,
+            border-color $transition-fast,
+            transform $transition-fast,
+            opacity $transition-fast;
+
+        &:hover:not(:disabled) {
+            background-color: $primary-dark;
+            border-color: transparent;
+            color: $text-on-color;
+        }
+
+        &:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        &:focus-visible {
+            outline: 3px solid $focus-ring;
+            outline-offset: 2px;
+        }
+
+        &:disabled {
+            background-color: $border-strong;
+            border-color: transparent;
+            color: $text-on-color;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    }
+}
+
+.alertSuccess {
+    padding: $space-3 $space-4;
+    background: $success-soft;
+    border: 1px solid rgba($success-color, 0.2);
+    color: $success-color;
+    border-radius: $radius-md;
+    margin-bottom: $space-4;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.alertError {
+    padding: $space-3 $space-4;
+    background: $danger-soft;
+    border: 1px solid $danger-border;
+    color: $text-danger;
+    border-radius: $radius-md;
+    margin-bottom: $space-4;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.emptyState,
+.loading {
+    display: grid;
+    min-height: 180px;
+    place-content: center;
+    padding: $space-8;
+    text-align: center;
+    color: $text-muted;
+    background: $surface-color;
+    border-radius: $radius-md;
+    border: 1px solid $border-color;
+    font-size: 15px;
+}
+
+.emptyState p {
+    margin: 0;
+}
+
+.loading {
+    &::before {
+        width: 26px;
+        height: 26px;
+        margin: 0 auto $space-3;
+        border: 3px solid $border-blue;
+        border-top-color: $primary-color;
+        border-radius: 50%;
+        content: "";
+        animation: spin 800ms linear infinite;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 960px) {
+    .workspace {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .caseList {
+        max-height: 320px;
+    }
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .container {
+        min-height: auto;
+        padding: $space-4 0;
+    }
+
+    .header {
+        margin-bottom: $space-4;
+
+        h2 {
+            font-size: 1.25rem;
+        }
+    }
+
+    .workspace {
+        gap: $space-4;
+    }
+
+    .caseList {
+        max-height: 280px;
+    }
+
+    .detailPane {
+        padding: $space-4;
+    }
+
+    .reviewForm button {
+        align-self: stretch;
+        min-height: 44px;
+    }
+
+    .emptyState,
+    .loading {
+        min-height: 150px;
+        padding: $space-6;
+    }
+}

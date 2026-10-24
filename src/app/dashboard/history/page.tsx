@@ -524,6 +524,67 @@ export default function AssessmentHistoryPage() {
                                                 </span>
                                             </div>
 
+                                            {selectedItem.status ===
+                                                "REVIEWED" && (
+                                                <section
+                                                    className={cx(
+                                                        "doctorReviewNote",
+                                                    )}
+                                                >
+                                                    <div
+                                                        className={cx(
+                                                            "doctorReviewHeader",
+                                                        )}
+                                                    >
+                                                        <span
+                                                            className={cx(
+                                                                "reviewedBadge",
+                                                            )}
+                                                        >
+                                                            Đã được Bác sĩ thẩm
+                                                            định
+                                                        </span>
+                                                        <h3>
+                                                            Ý kiến chuyên môn
+                                                            của Bác sĩ
+                                                        </h3>
+                                                    </div>
+                                                    <p
+                                                        className={cx(
+                                                            "doctorReviewText",
+                                                        )}
+                                                    >
+                                                        {selectedItem.doctorNotes ||
+                                                            "Bác sĩ chưa bổ sung nội dung ghi chú."}
+                                                    </p>
+                                                    <div
+                                                        className={cx(
+                                                            "doctorReviewMeta",
+                                                        )}
+                                                    >
+                                                        <span>
+                                                            Bác sĩ phụ trách:{" "}
+                                                            <strong>
+                                                                {selectedItem
+                                                                    .reviewedBy
+                                                                    ?.fullName ||
+                                                                    "Bác sĩ"}
+                                                            </strong>
+                                                        </span>
+                                                        <span>
+                                                            Ngày thẩm định:{" "}
+                                                            {selectedItem.reviewedAt
+                                                                ? new Date(
+                                                                      selectedItem.reviewedAt,
+                                                                  ).toLocaleString(
+                                                                      "vi-VN",
+                                                                  )
+                                                                : "Chưa cập nhật"}
+                                                        </span>
+                                                    </div>
+                                                </section>
+                                            )}
+
                                             <div className={cx("reportRow")}>
                                                 <strong>
                                                     Tóm tắt triệu chứng:

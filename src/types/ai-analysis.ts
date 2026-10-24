@@ -11,6 +11,12 @@ export interface IFollowUp {
 
 export interface AssessmentItem {
     _id: string;
+    status?: "PENDING" | "REVIEWED";
+    doctorNotes?: string | null;
+    reviewedAt?: string | null;
+    reviewedBy?: {
+        fullName?: string;
+    } | null;
     symptomSummary: string;
     riskLevel: RiskLevel;
     riskExplanation: string;
